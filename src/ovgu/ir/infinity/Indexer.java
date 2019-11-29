@@ -25,11 +25,11 @@ public class Indexer {
         IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
         if(isCreated){
             iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
-
         }else{
             iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
         }
         writer = new IndexWriter(indexDirectory, iwc);
+        writer.close();
     }
 
 

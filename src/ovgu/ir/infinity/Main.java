@@ -11,7 +11,6 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 
-import javax.security.sasl.SaslServer;
 
 public class Main {
     Indexer indexer;
@@ -30,7 +29,6 @@ public class Main {
             String dataDirectory = args[0];
             String indexDirectory = args[1];
             String searchQuery = args[2];
-
 
             try {
                 main.createIndex(dataDirectory, indexDirectory);
@@ -74,15 +72,34 @@ public class Main {
     private void search(String searchQuery, String indexDir) throws IOException, ParseException {
         searcher = new Searcher(indexDir);
         long startTime = System.currentTimeMillis();
-        TopDocs hits = searcher.search(searchQuery);
+        TopDocs hits = searcher.searchMultipleFields(searchQuery);
         long endTime = System.currentTimeMillis();
 
         System.out.println(hits.totalHits +
                 " documents found. Time :" + (endTime - startTime));
         for(ScoreDoc scoreDoc : hits.scoreDocs) {
             Document doc = searcher.getDocument(scoreDoc);
-            System.out.println("File: "
-                    + doc.get(LuceneConstants.PATH_FIELD));
+
+            String title = doc.get(LuceneConstants.TITLE);
+            String path = doc.get(LuceneConstants.PATH_FIELD);
+            String modificationTime = doc.get(LuceneConstants.LAST_MODIFIED);
+
+            double score = scoreDoc.score;
+
+            if (path != null) {
+
+                System.out.println(title);
+
+                System.out.println("Path: " + path);
+
+                System.out.println("Score: " + score + "\n");
+
+                System.out.println("Modification Time: " + modificationTime + "\n");
+
+            } else {
+                System.out.println("No path for this document");
+            }
+
         }
     }
 
