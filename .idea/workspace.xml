@@ -6,21 +6,7 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f6e76460-0abd-435e-9bc3-defc3730e5ce" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/Information_Retrieval_lucene_jar/Information-Retrieval-lucene.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Information-Retrieval-lucene/ovgu/ir/infinity/HTMLParser.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Information-Retrieval-lucene/ovgu/ir/infinity/HTMLParser.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Information-Retrieval-lucene/ovgu/ir/infinity/Indexer$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Information-Retrieval-lucene/ovgu/ir/infinity/Indexer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Information-Retrieval-lucene/ovgu/ir/infinity/Indexer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Information-Retrieval-lucene/ovgu/ir/infinity/LuceneConstants.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Information-Retrieval-lucene/ovgu/ir/infinity/LuceneConstants.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Information-Retrieval-lucene/ovgu/ir/infinity/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Information-Retrieval-lucene/ovgu/ir/infinity/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Information-Retrieval-lucene/ovgu/ir/infinity/Searcher.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Information-Retrieval-lucene/ovgu/ir/infinity/Searcher.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ovgu/ir/infinity/HTMLParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ovgu/ir/infinity/HTMLParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ovgu/ir/infinity/Indexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ovgu/ir/infinity/Indexer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ovgu/ir/infinity/LuceneConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ovgu/ir/infinity/LuceneConstants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ovgu/ir/infinity/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ovgu/ir/infinity/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ovgu/ir/infinity/Searcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ovgu/ir/infinity/Searcher.java" afterDir="false" />
-    </list>
+    <list default="true" id="f6e76460-0abd-435e-9bc3-defc3730e5ce" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
