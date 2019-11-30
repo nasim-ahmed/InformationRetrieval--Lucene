@@ -12,7 +12,7 @@ import org.apache.lucene.search.TopDocs;
 
 /*Special thanks to this website for code
 
-https://www.dataonfocus.com/k-means-clustering-java-code/
+https://www.ionos.de/digitalguide/server/konfiguration/apache-lucene/
 https://www.programcreek.com/java-api-examples/index.php?api=org.tartarus.snowball.ext.PorterStemmer
 https://stackoverflow.com/questions/3354084/getting-the-vector-space-model-tf-idf-from-a-query-on-a-lucene-index/3361993#3361993*/
 
