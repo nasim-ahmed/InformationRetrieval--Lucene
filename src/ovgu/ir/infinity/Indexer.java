@@ -8,16 +8,23 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.jsoup.Jsoup;
 
+import javax.print.DocFlavor;
+import javax.swing.*;
 import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Scanner;
 
 public class Indexer {
     private IndexWriter writer;
-    boolean isCreated = false;
+
 
     public Indexer(String indexDirectoryPath) throws IOException {
+
+        boolean isCreated = true;
+
 
         Directory indexDirectory = FSDirectory.open(Paths.get(indexDirectoryPath));
 
@@ -29,69 +36,79 @@ public class Indexer {
             iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
         }
         writer = new IndexWriter(indexDirectory, iwc);
-        writer.close();
     }
 
 
-    public void close() throws CorruptIndexException, IOException{
+    public void close() throws IOException{
         writer.close();
     }
 
-    private void indexFile(Path file, long lastModified) throws IOException {
+    private Document getDocument(File file, long lastModified) throws IOException {
+        Document doc = new Document();
+
+        org.jsoup.nodes.Document parsedDoc = HTMLParser.parseHTML(file);
+        String parsedContents = parsedDoc.body().text();
+        String stemmedContents = Stemmer.stemming(parsedContents);
+
+
+        Field filePathField = new StringField(LuceneConstants.PATH_FIELD, file.toString(), Field.Store.YES);
+        Field modifiedField = new LongPoint("modified", lastModified);
+        Field titleField = new TextField(LuceneConstants.TITLE, parsedDoc.title(), Field.Store.YES);
+        Field contentsField = new TextField(LuceneConstants.CONTENTS, stemmedContents, Field.Store.NO);
+
+        doc.add(filePathField);
+        doc.add(modifiedField);
+        doc.add(titleField);
+        doc.add(contentsField);
+
+
+        return doc;
+    }
+
+    private void indexFile(File file, long lastModified) throws IOException {
+        System.out.println("Indexing "+file.getAbsolutePath());
+
+
         Document document = getDocument(file, lastModified);
         if (writer.getConfig().getOpenMode() == IndexWriterConfig.OpenMode.CREATE) {
             System.out.println("Adding " + file);
             writer.addDocument(document);
-            isCreated = true;
+
         } else {
             System.out.println("Updating " + file);
-            writer.updateDocument(new Term("path", file.toString()), document);
-            isCreated = false;
+            writer.updateDocument(new Term(LuceneConstants.PATH_FIELD, file.toString()), document);
         }
     }
 
-    private Document getDocument(Path file, long lastModified) throws IOException {
-
-            Document document = new Document();
-
-            org.jsoup.nodes.Document parsedDoc = HTMLParser.parseHTML(file);
-            String parsedContents = parsedDoc.body().text();
-            String stemmedContents = Stemmer.stemming(parsedContents);
 
 
-            Field filePathField = new StringField(LuceneConstants.PATH_FIELD, file.toString(), Field.Store.YES);
-            Field modifiedField = new LongPoint(LuceneConstants.LAST_MODIFIED, lastModified);
-            Field titleField = new TextField(LuceneConstants.TITLE, parsedDoc.title(), Field.Store.YES);
-            Field contentsField = new TextField(LuceneConstants.CONTENTS, stemmedContents, Field.Store.NO);
+    public int createIndex(String dataDirPath) throws IOException {
+        File directory = new File(dataDirPath);
 
-            document.add(filePathField);
-            document.add(modifiedField);
-            document.add(titleField);
-            document.add(contentsField);
+        // Get all files from a directory.
+        File[] fList = directory.listFiles();
+        if(fList != null)
+            for (File file : fList) {
+                if (file.isFile()) {
+                    if(!file.isDirectory()
+                            && !file.isHidden()
+                            && file.exists()
+                            && file.canRead()
+                    ){
 
-            return document;
-
-    }
-
-    public void createIndex(String dataDirPath) throws IOException {
-        final Path docDir = Paths.get(dataDirPath);
-        if (Files.isDirectory(docDir)) {
-            Files.walkFileTree(docDir, new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    try {
-                        // Recurse the directory tree
-                          indexFile(file, attrs.lastModifiedTime().toMillis());
-                    } catch (IOException ignore) {
-                        // Ignore files that cannot be read
+                        indexFile(file, file.lastModified());
                     }
-                    return FileVisitResult.CONTINUE;
-                }
-            });
-        } else {
-             indexFile(docDir, Files.getLastModifiedTime(docDir).toMillis());
-        }
 
+                } else if (file.isDirectory()) {
+                    createIndex(file.getAbsolutePath());
+                }
+            }
+        return writer.numRamDocs();
     }
+
+
+
+
+
 
 }

@@ -1,7 +1,6 @@
 package ovgu.ir.infinity;
 
 import java.io.IOException;
-import java.nio.file.FileStore;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -12,26 +11,23 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 
 
+
 public class Main {
     Indexer indexer;
     Searcher searcher;
-    static Main main;
 
 
-    public static void main(String[] args) {
-        main = new Main();
-        main.inputFromCommandLine(args);
-    }
-
-    private void inputFromCommandLine(String[] args){
+    public static void main(String[] args) throws IOException {
         if (!args[0].equals("") && !args[1].equals("") && !args[2].equals("")) {
+            Main main = new Main();
 
             String dataDirectory = args[0];
             String indexDirectory = args[1];
             String searchQuery = args[2];
 
+            main.createIndex(dataDirectory, indexDirectory);
+
             try {
-                main.createIndex(dataDirectory, indexDirectory);
                 main.search(searchQuery, indexDirectory);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -45,16 +41,16 @@ public class Main {
         }
     }
 
-    private void createIndex(String docsPath, String indexPath) throws IOException{
 
+    private void createIndex(String docsPath, String indexPath) throws IOException{
         boolean isValidPath = checkDocDirectory(docsPath);
         if (isValidPath){
             indexer = new Indexer(indexPath);
             long startTime = System.currentTimeMillis();
-            indexer.createIndex(docsPath);
+            int numDocuments = indexer.createIndex(docsPath);
             long endTime = System.currentTimeMillis();
             indexer.close();
-            System.out.println(" File indexed, time taken: "
+            System.out.println(numDocuments + " File indexed, time taken: "
                     +(endTime-startTime)+" ms");
         }
     }
@@ -69,10 +65,10 @@ public class Main {
         return true;
     }
 
-    private void search(String searchQuery, String indexDir) throws IOException, ParseException {
-        searcher = new Searcher(indexDir);
+    private void search(String searchQuery, String indexDirectoryPath) throws IOException, ParseException {
+        searcher = new Searcher(indexDirectoryPath);
         long startTime = System.currentTimeMillis();
-        TopDocs hits = searcher.searchMultipleFields(searchQuery);
+        TopDocs hits = searcher.search(searchQuery);
         long endTime = System.currentTimeMillis();
 
         System.out.println(hits.totalHits +
@@ -82,27 +78,17 @@ public class Main {
 
             String title = doc.get(LuceneConstants.TITLE);
             String path = doc.get(LuceneConstants.PATH_FIELD);
-            String modificationTime = doc.get(LuceneConstants.LAST_MODIFIED);
+            String lastModified = doc.get("modified");
+
 
             double score = scoreDoc.score;
 
-            if (path != null) {
-
-                System.out.println(title);
-
-                System.out.println("Path: " + path);
-
-                System.out.println("Score: " + score + "\n");
-
-                System.out.println("Modification Time: " + modificationTime + "\n");
-
-            } else {
-                System.out.println("No path for this document");
-            }
+            System.out.println("Title: "+ title);
+            System.out.println("Path: "+ path);
+            System.out.println("Last Modified: "+ lastModified);
+            System.out.println("Score: "+ score);
 
         }
     }
-
-
 
 }
